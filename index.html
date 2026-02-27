@@ -110,7 +110,7 @@
         .skills-section { margin: 15px 0; padding: 15px 0; border-top: 1px solid var(--border); }
         .skills-title { font-size: 0.7rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: 600; }
         .skills-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-        .skill-tag {background: var(--bg-hover);color: var(--accent); font-size: 0.65rem; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border);}
+        .skill-tag {background: var(--bg-hover);color: var(--accent); font-size: 0.80rem; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border);}
 
         /* --- Main Interface --- */
         .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; position: relative; overflow-y: auto; width: 100%; }
@@ -314,6 +314,8 @@
         ];
 
         const REPLIES = {
+            greeting: "Hello! I'm Niyas' AI assistant. I can tell you about his M.Tech research, computer vision projects, or professional background. What would you like to see?",
+            fallback: "I'm not sure I understand that request. Try asking about my <b>Research</b>, <b>Projects</b>, or <b>Skills</b>. You can also use the buttons below:",
             about: "Hi, I'm <b>Niyas Nowshad</b>, a <b>Computer Science Engineer</b> currently pursuing my <b>M.Tech in Computer Science</b> with a focus on cutting-edge research in Deep Learning and Computer Vision. My academic journey is driven by a passion for building intelligent systems that bridge the gap between complex data and real-world utility.<br><br>Currently, I am immersed in research centered on Image and Video Processing, exploring how deep neural networks can interpret and enhance visual information. From developing AI-powered hardware like Raspberry Pi voice assistants to my current work in advanced model architectures, I thrive on the challenge of turning theoretical concepts into functional technology.<br><br>I am a lifelong learner and a collaborative problem-solver, eager to contribute to innovative environments that push the boundaries of what’s possible with emerging technologies.",
             education: "<b>Academic History:</b><br><br>• <b>M.Tech in Computer Science & Engineering</b><br> Mar Baselios College of Engineering and Technology, Kerala (2025–2027). <br><br>• <b>B.Tech in Computer Science & Engineering</b> <i>GPA: 7.58</i><br> Rajadhani Institute of Engineering and Technology, Kerala (2021–2025). <br><br>• <b>Higher Secondary Education (Computer Science Major) </b><i>GPA: 88.8%</i><br> Sunrise English Private School, Abu Dhabi (2019–2021).",
             experience: "<b>Research & Experience:</b><br><br>• <b>Graduate Researcher | M.Tech Thesis </b><br><i>January 2026-Current, Trivandrum, Kerala</i><br><br>- Engineering a deep learning framework to automate face anonymization, ensuring individual privacy in public datasets and video surveillance.<br>- Utilizing GAN architectures to replace sensitive identities with realistic, synthetic faces while maintaining original expressions and environmental lighting.<br>- Optimizing the balance between total identity de-identification and the retention of high-fidelity visual data for secondary research and analysis.<br><br>• <b>Machine Learning Intern | Aican Automate </b><br><i>October 2022-November 2022, India</i><br><br>- Assisting with the development and implementation of machine learning models and algorithms.<br>- Cleaning and preprocessing data for machine learning tasks.<br>- Conducting research and staying up-to-date on the latest machine learning technologies.<br>- Collaborating with a team of data scientists, engineers, and other professionals to build and deploy machine learning systems.",
@@ -420,48 +422,43 @@
             modal.style.display = 'flex';
         }
         function process() {
-            const val = promptInput.value.toLowerCase();
+            const val = promptInput.value.toLowerCase().trim();
             if(!val) return;
             
             hero.style.display = 'none'; chat.style.display = 'flex';
-            // Line 256 change to:
-chat.innerHTML += `<div style="display:flex; justify-content:flex-end; margin-bottom:20px; padding:0 10px;"><div style="background:var(--bg-hover); color:var(--text-main); padding:10px 20px; border-radius:18px;">${promptInput.value}</div></div>`;
+            chat.innerHTML += `<div style="display:flex; justify-content:flex-end; margin-bottom:20px; padding:0 10px;"><div style="background:var(--bg-hover); color:var(--text-main); padding:10px 20px; border-radius:18px;">${promptInput.value}</div></div>`;
             scroll();
 
             let reply = "";
             let currentId = null;
 
-            // Section Detection
-            if(val.includes('about')) { reply = REPLIES.about; currentId = 'about'; }
+            // --- CONSOLIDATED DETECTION LOGIC ---
+            if (val.match(/^(hi|hello|hey|hola|hey there|greetings)/)) {
+                reply = REPLIES.greeting + getFollowUpChips('about');
+            }
+            else if(val.includes('about')) { reply = REPLIES.about; currentId = 'about'; }
             else if(val.includes('edu')) { reply = REPLIES.education; currentId = 'education'; }
             else if(val.includes('exp')) { reply = REPLIES.experience; currentId = 'experience'; }
             else if(val.includes('skill')) { reply = REPLIES.skills; currentId = 'skills'; }
             else if(val.includes('cont')) { reply = REPLIES.contact; currentId = 'contact'; }
             else if(val.includes('proj')) { reply = REPLIES.projects; currentId = 'projects'; }
             
-            // Project Detection Logic
-            let detectedKey = null;
-            if(val.includes('lens')) detectedKey = 'lens';
-            else if(val.includes('voice')) detectedKey = 'voice';
-            else if(val.includes('face')) detectedKey = 'face';
-            else if(val.includes('vibe')) detectedKey = 'vibe';
-            else if(val.includes('vehicle')) detectedKey = 'vehicle';
+            // Project Specific Detection
+            else if(val.includes('lens')) { reply = getProjectCard('lens'); }
+            else if(val.includes('voice')) { reply = getProjectCard('voice'); }
+            else if(val.includes('face')) { reply = getProjectCard('face'); }
+            
+            // Fallback if no keywords are matched
+            else {
+                reply = REPLIES.fallback + getFollowUpChips(null);
+            }
 
-            if(detectedKey) {
-                reply = getProjectCard(detectedKey);
-                // Append project-specific suggestions
-                let nextProjSuggestions = `<div class="action-chips" style="margin-top:20px; border-top: 1px solid var(--border); padding-top:15px;"><p style="font-size:0.85rem; color:var(--text-sub); width:100%; margin-bottom:10px; text-align:left;">Which project would you like to view next?</p>`;
-                for(let key in PROJECTS) {
-                    if(key !== detectedKey) {
-                        nextProjSuggestions += `<div class="action-chip" onclick="ask('Tell me about ${PROJECTS[key].name}')"><i data-lucide="arrow-right" size="14"></i> ${PROJECTS[key].name}</div>`;
-                    }
-                }
-                reply += nextProjSuggestions + `</div>`;
-                } else if (currentId) {
-                    // Append general section suggestions
-                    reply += getFollowUpChips(currentId);
-                }
+            // Append suggestions if it was a main section
+            if (currentId && !reply.includes('action-chips')) {
+                reply += getFollowUpChips(currentId);
+            }
 
+            // Reset input and show typing indicator
             promptInput.value = '';
             const tid = 't-' + Date.now();
             chat.innerHTML += `<div class="message-row" id="${tid}"><div class="ai-icon"><i data-lucide="sparkles" size="16" color="white"></i></div><div class="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
@@ -470,7 +467,7 @@ chat.innerHTML += `<div style="display:flex; justify-content:flex-end; margin-bo
             setTimeout(() => {
                 document.getElementById(tid).innerHTML = `<div class="ai-icon"><i data-lucide="sparkles" size="16" color="white"></i></div><div class="msg-content">${reply}</div>`;
                 lucide.createIcons(); scroll();
-            }, 1000);
+            }, 800);
         }
 
         function openResume() { document.getElementById('resume-modal').style.display = 'flex'; }
