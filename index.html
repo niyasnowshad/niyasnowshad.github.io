@@ -64,7 +64,7 @@
         }
 
         .nav-item:hover { 
-            background: var(--bg-hover); /* Changed from #333537 */
+            background: var(--bg-hover); 
             color: var(--accent); 
         }
 
@@ -92,7 +92,7 @@
 
         /* Ensure the main-content container can hold absolute items */
         .main-content { position: relative; }
-        .sidebar-name { font-size: 1rem; font-weight: 500; color: var(--text-main); } /* Changed from white */
+        .sidebar-name { font-size: 1rem; font-weight: 500; color: var(--text-main);  transition: 0.3s; } /* Changed from white */
         
         /* Sidebar Identity */
         .profile-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
@@ -133,10 +133,30 @@
         .dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.1); } }
 
+        .cert-chip-full {
+            background: var(--ai-bubble);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.2s;
+            width: 100%; 
+            text-decoration: none;
+            margin-top: 10px;
+            justify-content: flex-start;
+        }
 
-        .action-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
-        .action-chip { background: var(--ai-bubble); border: 1px solid var(--border); border-radius: 12px; padding: 12px 18px; cursor: pointer; font-size: 0.9rem; color: var(--accent); display: flex; align-items: center; gap: 25px; transition: 0.2s; }
-
+        .cert-chip-full:hover {
+            border-color: var(--accent);
+            background: var(--bg-hover);
+        }
+        .action-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; width: 100% }
+        .action-chip { background: var(--ai-bubble); border: 1px solid var(--border); border-radius: 12px; padding: 12px 18px; cursor: pointer; font-size: 0.9rem; color: var(--accent); display: flex; align-items: center; gap: 12px; transition: 0.2s; margin-top: 15px;}
 
         /* --- Bottom Input --- */
         .bottom-container { position: fixed; bottom: 20px; width: 100%; max-width: 800px; background: var(--bg-dark); padding: 0 15px; }
@@ -208,7 +228,7 @@
 
     <header class="mobile-header">
         <div onclick="toggleSidebar()"><i data-lucide="menu" style="color: var(--text-main);"></i></div>
-        <div style="font-weight: 500;">Niyas Nowshad AK</div>
+        <div style="font-weight: 500;">Niyas Nowshad</div>
         <div onclick="resetChat()"><i data-lucide="plus" color="white"></i></div>
     </header>
 
@@ -296,8 +316,14 @@
         const REPLIES = {
             about: "Hi, I'm <b>Niyas Nowshad</b>, a <b>Computer Science Engineer</b> currently pursuing my <b>M.Tech in Computer Science</b> with a focus on cutting-edge research in Deep Learning and Computer Vision. My academic journey is driven by a passion for building intelligent systems that bridge the gap between complex data and real-world utility.<br><br>Currently, I am immersed in research centered on Image and Video Processing, exploring how deep neural networks can interpret and enhance visual information. From developing AI-powered hardware like Raspberry Pi voice assistants to my current work in advanced model architectures, I thrive on the challenge of turning theoretical concepts into functional technology.<br><br>I am a lifelong learner and a collaborative problem-solver, eager to contribute to innovative environments that push the boundaries of what’s possible with emerging technologies.",
             education: "<b>Academic History:</b><br><br>• <b>M.Tech in Computer Science & Engineering</b><br> Mar Baselios College of Engineering and Technology, Kerala (2025–2027). <br><br>• <b>B.Tech in Computer Science & Engineering</b> <i>GPA: 7.58</i><br> Rajadhani Institute of Engineering and Technology, Kerala (2021–2025). <br><br>• <b>Higher Secondary Education (Computer Science Major) </b><i>GPA: 88.8%</i><br> Sunrise English Private School, Abu Dhabi (2019–2021).",
-            experience: "<b>Research & Experience:</b><br><br>• <b>Graduate Researcher | M.Tech Thesis </b><br><i>January 2026-Current, Trivandrum, Kerala</i><br><br>- Privacy-Preserving Vision: Researching Face Anonymization using Generative Adversarial Networks (GANs) to enable secure, privacy-compliant data sharing.<br>- Generative Architecture: Designing models that synthesize realistic, synthetic identities while strictly preserving original facial expressions, poses, and lighting.<br>-Utility Optimization: Balancing absolute identity de-identification with high-fidelity data utility to ensure anonymized videos remain viable for secondary AI analysis.<br><br>• <b>Machine Learning Intern at Aican Automate </b><br><i>October 2022-November 2022, India</i><br><br>- Assisting with the development and implementation of machine learning models and algorithms.<br>- Cleaning and preprocessing data for machine learning tasks.<br>- Conducting research and staying up-to-date on the latest machine learning technologies.<br>- Collaborating with a team of data scientists, engineers, and other professionals to build and deploy machine learning systems.",
-            skills: "<b>Technical Toolkit:</b><br><br>• <b>AI & Research:</b> Deep Learning, Computer Vision, Image/Video Processing, Machine Learning.<br>• <b>Languages:</b> Python, Java, C.<br>• <b>Libraries & Frameworks:</b> NumPy, Pandas, OpenCV, Matplotlib.<br>• <b>Databases:</b> MySQL.<br>• <b>Tools:</b> Adobe Photoshop, Raspberry Pi, Git/GitHub, Microsoft Office Suite.<br>",
+            experience: "<b>Research & Experience:</b><br><br>• <b>Graduate Researcher | M.Tech Thesis </b><br><i>January 2026-Current, Trivandrum, Kerala</i><br><br>- Engineering a deep learning framework to automate face anonymization, ensuring individual privacy in public datasets and video surveillance.<br>- Utilizing GAN architectures to replace sensitive identities with realistic, synthetic faces while maintaining original expressions and environmental lighting.<br>- Optimizing the balance between total identity de-identification and the retention of high-fidelity visual data for secondary research and analysis.<br><br>• <b>Machine Learning Intern | Aican Automate </b><br><i>October 2022-November 2022, India</i><br><br>- Assisting with the development and implementation of machine learning models and algorithms.<br>- Cleaning and preprocessing data for machine learning tasks.<br>- Conducting research and staying up-to-date on the latest machine learning technologies.<br>- Collaborating with a team of data scientists, engineers, and other professionals to build and deploy machine learning systems.",
+            skills: "<b>Technical Toolkit:</b><br><br>• <b>AI & Research:</b> Deep Learning, Computer Vision, Image/Video Processing, Machine Learning.<br>• <b>Languages:</b> Python, Java, C.<br>• <b>Libraries & Frameworks:</b> NumPy, Pandas, OpenCV, Matplotlib.<br><br>" +
+                    "<b>Professional Certifications (Click to Preview):</b>" +
+                    "<div style='display: flex; flex-direction: column; gap: 4px; width: 100%;'>" +
+                    "<div class='cert-chip-full' onclick=\"openCert('assets/NiyasNowshad.pdf', 'Computer Vision — Udemy')\"><i data-lucide='award' size='18'></i> Computer Vision in Python — Udemy</div>" +
+                    "<div class='cert-chip-full' onclick=\"openCert('assets/NiyasNowshad.pdf', 'Digital Marketing — Google')\"><i data-lucide='award' size='18'></i> Digital Marketing — Google</div>" +
+                    "<div class='cert-chip-full' onclick=\"openCert('assets/NiyasNowshad.pdf', 'Tech Support — Coursera')\"><i data-lucide='award' size='18'></i> Tech Support — Coursera</div>" +
+                    "</div>",   
             contact: "I am always open to discussing research collaborations, innovative projects, or new opportunities in the AI space<br><br>Reach me at <b>niyasmnowshad@gmail.com</b> or Call <b>+91 8129565041.</b>",
             projects: "Check out my major projects:<br><div class='action-chip' onclick=\"ask('Tell me about Face Anonymization')\"><i data-lucide='user-lock' size='14'></i>Face Anonymization using GAN</div><div class='action-chip' onclick=\"ask('Tell me about AI Lens')\"><i data-lucide='camera' size='14'></i> AI Lens</div><div class='action-chip' onclick=\"ask('Tell me about AI Voice Assistant')\"><i data-lucide='mic' size='14'></i>AI Voice Assistant using Raspberry PI</div>"
         };
@@ -319,7 +345,7 @@
                 source: "#",
                 paper: "https://ijirt.org/publishedpaper/IJIRT181648_PAPER.pdf"
             },
-            'face': { name: "Face Anonymization using GAN", desc: "Currently doing research on Face Anonymization using GAN.", video: "#", source: "#", paper: "#" },
+            'face': { name: "Face Anonymization using GAN", desc: "- <b>Privacy-Preserving Vision:</b> Researching Face Anonymization using Generative Adversarial Networks (GANs) to enable secure, privacy-compliant data sharing.<br>- <b>Generative Architecture:</b> Designing models that synthesize realistic, synthetic identities while strictly preserving original facial expressions, poses, and lighting.<br>- <b>Utility Optimization:</b> Balancing absolute identity de-identification with high-fidelity data utility to ensure anonymized videos remain viable for secondary AI analysis.<br>", video: "#", source: "#", paper: "#" },
             //'vibe': { name: "next topic", desc: "Currently doing research on Face Anonymization using GAN.", video: "#", source: "#", paper: "#" },
         };
 
@@ -333,6 +359,11 @@
             const sourceBtn = (p.source && p.source !== "#") ? `<a href="${p.source}" target="_blank" class="link-btn"><i data-lucide="github" size="16"></i> Code</a>` : '';
             const paperBtn = (p.paper && p.paper !== "#") ? `<a href="${p.paper}" target="_blank" class="link-btn"><i data-lucide="file-text" size="16"></i> Research Paper</a>` : '';
 
+            const progressBadge = (p.video === "#") ? 
+                `<div class="link-btn" style="opacity: 0.6; cursor: default; border-style: dashed; color: var(--text-sub); background: transparent;">
+                    <i data-lucide="clock" size="16"></i> In-Progress Research
+                </div>` : '';
+
             return `
                 <div class="project-overview">
                     ${imgTag}
@@ -342,6 +373,7 @@
                         ${videoBtn}
                         ${sourceBtn}
                         ${paperBtn}
+                        ${progressBadge}
                     </div>
                 </div>`;
         }
@@ -374,7 +406,19 @@
             
             lucide.createIcons();
         }
+        function openCert(pdfPath, title) {
+            const modal = document.getElementById('resume-modal');
+            const viewer = modal.querySelector('.pdf-viewer');
+            const modalTitle = modal.querySelector('h2');
+            const downloadBtn = modal.querySelector('a[download]');
 
+            // Update modal content for the specific certificate
+            modalTitle.innerText = title;
+            viewer.src = pdfPath;
+            downloadBtn.href = pdfPath;
+            
+            modal.style.display = 'flex';
+        }
         function process() {
             const val = promptInput.value.toLowerCase();
             if(!val) return;
