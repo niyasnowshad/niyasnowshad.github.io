@@ -425,17 +425,23 @@
             const val = promptInput.value.toLowerCase().trim();
             if(!val) return;
             
-            hero.style.display = 'none'; chat.style.display = 'flex';
-            chat.innerHTML += `<div style="display:flex; justify-content:flex-end; margin-bottom:20px; padding:0 10px;"><div style="background:var(--bg-hover); color:var(--text-main); padding:10px 20px; border-radius:18px;">${promptInput.value}</div></div>`;
+            hero.style.display = 'none'; 
+            chat.style.display = 'flex';
+            
+            chat.innerHTML += `<div style="display:flex; justify-content:flex-end; margin-bottom:20px; padding:0 10px;">
+                <div style="background:var(--bg-hover); color:var(--text-main); padding:10px 20px; border-radius:18px;">${promptInput.value}</div>
+            </div>`;
             scroll();
 
             let reply = "";
             let currentId = null;
 
-            // --- CONSOLIDATED DETECTION LOGIC ---
+            // --- 1. GREETING DETECTION ---
             if (val.match(/^(hi|hello|hey|hola|hey there|greetings)/)) {
-                reply = REPLIES.greeting + getFollowUpChips('about');
+                reply = REPLIES.greeting;
+                currentId = 'about'; // Suggest "About" as a starting point
             }
+            // --- 2. SECTION DETECTION ---
             else if(val.includes('about')) { reply = REPLIES.about; currentId = 'about'; }
             else if(val.includes('edu')) { reply = REPLIES.education; currentId = 'education'; }
             else if(val.includes('exp')) { reply = REPLIES.experience; currentId = 'experience'; }
@@ -443,22 +449,34 @@
             else if(val.includes('cont')) { reply = REPLIES.contact; currentId = 'contact'; }
             else if(val.includes('proj')) { reply = REPLIES.projects; currentId = 'projects'; }
             
-            // Project Specific Detection
-            else if(val.includes('lens')) { reply = getProjectCard('lens'); }
-            else if(val.includes('voice')) { reply = getProjectCard('voice'); }
-            else if(val.includes('face')) { reply = getProjectCard('face'); }
-            
-            // Fallback if no keywords are matched
+            // --- 3. PROJECT DETECTION LOGIC ---
+            let detectedKey = null;
+            if(val.includes('lens')) detectedKey = 'lens';
+            else if(val.includes('voice')) detectedKey = 'voice';
+            else if(val.includes('face')) detectedKey = 'face';
+            else if(val.includes('vibe')) detectedKey = 'vibe';
+            else if(val.includes('vehicle')) detectedKey = 'vehicle';
+
+            // --- 4. RESPONSE BUILDING ---
+            if(detectedKey) {
+                reply = getProjectCard(detectedKey);
+                let nextProjSuggestions = `<div class="action-chips" style="margin-top:20px; border-top: 1px solid var(--border); padding-top:15px;"><p style="font-size:0.85rem; color:var(--text-sub); width:100%; margin-bottom:10px; text-align:left;">Which project would you like to view next?</p>`;
+                for(let key in PROJECTS) {
+                    if(key !== detectedKey && PROJECTS[key].name) {
+                        nextProjSuggestions += `<div class="action-chip" onclick="ask('Tell me about ${PROJECTS[key].name}')"><i data-lucide="arrow-right" size="14"></i> ${PROJECTS[key].name}</div>`;
+                    }
+                }
+                reply += nextProjSuggestions + `</div>`;
+            } 
+            else if (currentId) {
+                reply += getFollowUpChips(currentId);
+            }
             else {
+                // Fallback for unrecognized inputs
                 reply = REPLIES.fallback + getFollowUpChips(null);
             }
 
-            // Append suggestions if it was a main section
-            if (currentId && !reply.includes('action-chips')) {
-                reply += getFollowUpChips(currentId);
-            }
-
-            // Reset input and show typing indicator
+            // --- 5. UI UPDATES ---
             promptInput.value = '';
             const tid = 't-' + Date.now();
             chat.innerHTML += `<div class="message-row" id="${tid}"><div class="ai-icon"><i data-lucide="sparkles" size="16" color="white"></i></div><div class="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
@@ -467,7 +485,7 @@
             setTimeout(() => {
                 document.getElementById(tid).innerHTML = `<div class="ai-icon"><i data-lucide="sparkles" size="16" color="white"></i></div><div class="msg-content">${reply}</div>`;
                 lucide.createIcons(); scroll();
-            }, 800);
+            }, 1000);
         }
 
         function openResume() { document.getElementById('resume-modal').style.display = 'flex'; }
